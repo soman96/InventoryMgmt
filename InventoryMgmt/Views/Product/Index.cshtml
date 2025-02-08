@@ -1,0 +1,40 @@
+@model List<Product>
+
+@{
+    ViewBag.Title = "Mgmt | Products";
+    Layout = "_Layout";
+}
+
+<h2>Products</h2>
+
+<a asp-action="Add" class="btn btn-primary">Add Product</a>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Low Stock Threshold</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+}
+else
+{
+    <p>There are currently no products to display. <a asp-action="Add">Add a Product</a></p>
+}
