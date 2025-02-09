@@ -1,13 +1,18 @@
 @model List<Product>
 
 @{
-    ViewBag.Title = "Mgmt | Products";
+    ViewBag.Title = "All Products";
     Layout = "_Layout";
 }
 
 <h2>Products</h2>
 
-<a asp-action="Add" class="btn btn-primary">Add Product</a>
+@if (TempData["success"] != null)
+{
+<div class="alert alert-success" role="alert">
+    @TempData["success"]
+</div>
+}
 
 @if (Model.Any())
 {
@@ -23,14 +28,17 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.ProductId</td>
+                <td>@product.ProductName</td>
+                <td>@product.Category.Name</td>
+                <td>@product.Price.ToString("C")</td>
+                <td>@product.Quantity</td>
+                <td>@product.LowStockThreshold</td>
+            </tr>
+        }
         </tbody>
     </table>
 }

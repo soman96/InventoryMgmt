@@ -14,13 +14,15 @@ public class Product
     public int CategoryId { get; set; }  // Foreign key
 
     [ForeignKey("CategoryId")]
-    public Category Category { get; set; } = null!; // Navigation property
+    public Category? Category { get; set; } // Navigation property
     
     [Required]
     public required double Price { get; set; }
-
-    // Set to default when not provided - ? not needed as it shouldn't be null in db
-    public int Quantity { get; set; } = 0;
-    public int LowStockThreshold { get; set; } = 10;
+    
+    [Required]
+    public int Quantity { get; set; }
+    
+    [Required]
+    public int LowStockThreshold { get; set; }
 
 }

@@ -9,19 +9,19 @@
 
 <form asp-action="Add" method="post">
     <div class="form-group">
-        <label asp-for="Name" class="control-label">Name</label>
-        <input type="text" asp-for="Name" class="form-control">
+        <label asp-for="Name" class="form-label">Name</label>
+        <input type="text" asp-for="Name" class="form-control" required>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Description" class="control-label">Description</label>
-        <small>Optional</small>
+        <label asp-for="Description" class="form-label">Description</label>
+        <small class="text-info">(Optional)</small>
         <input type="text" asp-for="Description" class="form-control">
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <br>
     <div class="form-group">
-        <input type="submit" value="Add Category" asp-for="Name" class="btn btn-primary">
+        <input type="submit" value="Add Category" class="btn btn-primary">
     </div>
 </form>
 
