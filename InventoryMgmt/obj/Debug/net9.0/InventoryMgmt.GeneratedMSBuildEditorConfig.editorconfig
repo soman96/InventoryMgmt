@@ -17,65 +17,69 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = InventoryMgmt
 build_property.RootNamespace = InventoryMgmt
-build_property.ProjectDir = /Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/
+build_property.ProjectDir = D:\School\Winter25\COMP2139\assignment1\InventoryMgmt\InventoryMgmt\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt
+build_property.MSBuildProjectDirectory = D:\School\Winter25\COMP2139\assignment1\InventoryMgmt\InventoryMgmt
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Category/Add.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvQWRkLmNzaHRtbA==
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Category/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcnlcQWRkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Category/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvSW5kZXguY3NodG1s
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Category/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcnlcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Home/About.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9BYm91dC5jc2h0bWw=
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Category/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcnlcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Home/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Home/About.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBYm91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Home/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Product/Add.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9BZGQuY3NodG1s
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Product/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9JbmRleC5jc2h0bWw=
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Product/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxBZGQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Product/Manage.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9NYW5hZ2UuY3NodG1s
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Product/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Shared/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Product/Manage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxNYW5hZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Shared/_ValidationScriptsPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/somanahmad/Documents/COMP-2139/InventoryMgmt/InventoryMgmt/Views/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-imem9abkdd
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/School/Winter25/COMP2139/assignment1/InventoryMgmt/InventoryMgmt/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-1w6cm33na7

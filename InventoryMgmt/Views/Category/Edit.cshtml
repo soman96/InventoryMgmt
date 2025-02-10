@@ -1,0 +1,42 @@
+﻿@model Category
+
+@{
+    ViewBag.Title = "Edit Category";
+    Layout = "_Layout";
+}
+
+<h2>Edit Category</h2>
+
+<form asp-action="Edit" method="post">
+    
+    <!-- 
+    Hidden field to ensure the ProjectId is included in the form submission
+    Linking the data to the correct record in db
+    -->
+    @Html.HiddenFor(model => model.CategoryId)
+    
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">Category Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label">Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    
+    <br/>
+    
+    <div class="form-group">
+        <input type="submit" value="Update" class="btn btn-primary" />
+    </div>
+    
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
