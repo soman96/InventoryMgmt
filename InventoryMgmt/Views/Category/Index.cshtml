@@ -32,7 +32,10 @@
             <td>@category.CategoryId</td>
             <td>@category.Name</td>
             <td>@category.Description</td>
-            <td>TODO</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-warning">Edit</a>
+                <a asp-action="Delete" asp-route-id="@category.CategoryId" class="btn btn-danger">Delete</a>
+            </td>
         </tr>
     }
     </tbody>
