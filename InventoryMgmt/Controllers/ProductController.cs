@@ -110,5 +110,57 @@ public class ProductController : Controller
         
         return View(products);
     }
+
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        var product = _context.Products.FirstOrDefault(p => p.ProductId == id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+        
+        // Get all the categories and their IDs for the dropdown menu
+        ViewBag.Categories = new SelectList(_context.Categories, "CategoryId", "Name");
+        
+        return View(product);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(int id,
+        [Bind("ProductId, ProductName, CategoryId, Price, Quantity, LowStockThreshold")] Product product)
+    {
+        if (id != product.ProductId)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            _context.Update(product);
+            _context.SaveChanges();
+            
+            TempData["Success"] = "Product updated successfully";
+            return RedirectToAction("Manage");
+        }
+        
+        // Get all the categories and their IDs for the dropdown menu
+        ViewBag.Categories = new SelectList(_context.Categories, "CategoryId", "Name");
+        return View(product);
+    }
+
+    [HttpGet]
+    public IActionResult View(int id)
+    {
+        var product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+        
+        return View(product);
+    }
     
 }

@@ -1,0 +1,32 @@
+@model Product
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Viewing @Model.ProductName</h2>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4 d-flex align-items-center">
+            <img src="~/img/no-image.png" alt="Product Image" class="img-fluid rounded">
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.ProductName</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Category: @Model.Category.Name</h6>
+                    <p class="card-text">
+                        Price: <strong>@Model.Price.ToString("C")</strong><br>
+                        Quantity: <strong>@Model.Quantity</strong><br>
+                        @* Low Stock Threshold: <strong>5</strong> *@
+                    </p>
+                    <button class="btn btn-success">Add to Cart</button>
+                    <a asp-action="Index" class="btn btn-primary">Return to Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+@model Category
+
+@{
+    ViewBag.Title = "Delete Category";
+    Layout = "_Layout";
+}
+
+<h2>Are you sure you want to delete this category?</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mb-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Category: @Model.Name</h5>
+                    <p class="card-text">Description: @Model.Description</p>
+                    <div class="alert alert-danger" role="alert">
+                        Warning: All the products with this category will be deleted!
+                        </div>
+
+                        <form asp-action="Delete" method="post">
+                            @Html.HiddenFor(model => Model.CategoryId)
+                            <input type="submit" value="Delete" class="btn btn-danger">
+                            <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn btn-warning">Edit Category</a>
+                            <a asp-action="Index" class="btn btn-primary">Back to Category List</a>
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>

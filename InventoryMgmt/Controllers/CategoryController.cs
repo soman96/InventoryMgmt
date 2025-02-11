@@ -76,8 +76,13 @@ public class CategoryController : Controller
                 {
                     return NotFound();
                 }
+                else
+                {
+                    throw;
+                }
             }
-
+            
+            TempData["success"] = $"The category {category.Name} has been edited successfully.";
             return RedirectToAction("Index");
         }
 
@@ -87,6 +92,36 @@ public class CategoryController : Controller
     private bool CategoryExists(int id)
     {
         return _context.Categories.Any(e => e.CategoryId == id);
+    }
+    
+    [HttpGet]
+    public IActionResult Delete(int id)
+    {
+        // Get the specific product
+        var category = _context.Categories.FirstOrDefault(p => p.CategoryId == id);
+
+        if (category == null)
+        {
+            return NotFound();
+        }
+        return View(category);
+    }
+    
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteConfirmed(int categoryId)
+    {
+        var category = _context.Categories.Find(categoryId);
+
+        if (category != null)
+        {
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+            TempData["Success"] = "Category deleted successfully!";
+            return RedirectToAction("Index");
+        }
+        
+        return NotFound();
     }
     
 }

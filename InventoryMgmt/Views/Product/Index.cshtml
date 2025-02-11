@@ -15,20 +15,21 @@
             @foreach (var product in Model)
             {
             <div class="col-md-3 mb-2">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <h5 class="card-title">@product.ProductName</h5>
-                        <p class="card-text">Category: @product.Category.Name</p>
-                        <p class="card-text">Price: @product.Price.ToString("C")</p>
-                        <p class="card-text">Stock: @product.Quantity</p>
-                        <a href="#" class="btn btn-primary">View</a>
-                        
+                        <h6 class="card-subtitle mb-2 text-muted">Category: @product.Category.Name</h6>
+                        <p class="card-text">
+                            Price: <strong>@product.Price.ToString("C")</strong><br>
+                            Quantity: <strong>@product.Quantity</strong><br>
+                        </p>
+                        <a asp-action="View" asp-route-id="@product.ProductId" class="btn btn-primary">View</a>
                         @if (product.Quantity == 0)
-                        {
+                        { 
                             <a href="#" class="btn btn-success disabled">Add to Order</a>
                         }
                         else
-                        {
+                        { 
                             <a href="#" class="btn btn-success">Add to Order</a>
                         }
                     </div>
