@@ -18,9 +18,7 @@
     <table class="table">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Name</th>
-            <th>Category</th>
             <th>Price</th>
             <th>Quantity</th>
             <th>Low Stock Threshold</th>
@@ -30,10 +28,8 @@
         <tbody>
         @foreach (var product in Model)
         {
-            <tr>
-                <td>@product.ProductId</td>
+            <tr class="@(product.Quantity < product.LowStockThreshold ? "table-danger" : "table-warning")">
                 <td>@product.ProductName</td>
-                <td>@product.Category.Name</td>
                 <td>@product.Price.ToString("C")</td>
                 <td>@product.Quantity</td>
                 <td>@product.LowStockThreshold</td>

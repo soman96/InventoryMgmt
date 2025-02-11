@@ -76,10 +76,6 @@ public class CategoryController : Controller
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
             }
 
             return RedirectToAction("Index");

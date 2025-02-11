@@ -102,5 +102,13 @@ public class ProductController : Controller
         
         return NotFound();
     }
+
+    [HttpGet]
+    public IActionResult LowStock()
+    {
+        var products = _context.Products.Where(p => p.Quantity <= p.LowStockThreshold).OrderBy(p => p.Quantity).ToList();
+        
+        return View(products);
+    }
     
 }
