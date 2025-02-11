@@ -17,11 +17,49 @@ public class ProductController : Controller
     }
     
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Index(string searchQuery, int? categoryId, string sortBy)
     {
-        // var products = _context.Products.ToList();
-        var products = _context.Products.Include(p => p.Category).ToList();
-        return View(products);
+        var products = _context.Products.Include(p => p.Category).AsQueryable();
+
+        // Searching (Case-Insensitive, Partial Match)
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            string lowerSearchQuery = searchQuery.ToLower();
+            products = products.Where(p => p.ProductName.ToLower().Contains(lowerSearchQuery));
+        }
+
+        // Filtering by category
+        if (categoryId.HasValue && categoryId > 0)
+        {
+            products = products.Where(p => p.CategoryId == categoryId);
+        }
+
+        // Sorting
+        switch (sortBy)
+        {
+            case "price_asc":
+                products = products.OrderBy(p => p.Price);
+                break;
+            case "price_desc":
+                products = products.OrderByDescending(p => p.Price);
+                break;
+            case "name_asc":
+                products = products.OrderBy(p => p.ProductName);
+                break;
+            case "name_desc":
+                products = products.OrderByDescending(p => p.ProductName);
+                break;
+            default:
+                products = products.OrderBy(p => p.ProductName);
+                break;
+        }
+
+        ViewBag.Categories = new SelectList(_context.Categories, "CategoryId", "Name");
+        ViewBag.SortBy = sortBy;
+        ViewBag.SearchQuery = searchQuery;
+        ViewBag.SelectedCategory = categoryId;
+
+        return View(products.ToList());
     }
     
     [HttpGet]
