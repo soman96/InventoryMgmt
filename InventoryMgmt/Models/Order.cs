@@ -6,14 +6,15 @@ public class Order
 {
     public int OrderId { get; set; }
     
-    [Required]
-    public required string CustomerName { get; set; }
+    // [Required]
+    // public required string CustomerName { get; set; }
     
     [DataType(DataType.Date)]
     public DateTime OrderDate { get; set; }
     
     public double Total { get; set; }
     
-    // public List<Product> Products { get; set; } = new List<Product>();
+    public List<Product> Products { get; set; } = new List<Product>();
     
+    public int Quantity { get; set; }
 }

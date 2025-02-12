@@ -30,7 +30,7 @@
                         }
                         else
                         { 
-                            <a href="#" class="btn btn-success">Add to Order</a>
+                            <a asp-controller="Order" asp-action="Add" asp-route-id="@product.ProductId" class="btn btn-success">Add to Order</a>
                         }
                     </div>
                 </div>
