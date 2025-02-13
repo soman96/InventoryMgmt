@@ -61,6 +61,44 @@ public class ProductController : Controller
 
         return View(products.ToList());
     }
+
+    [HttpGet]
+    public IActionResult FilterProducts(string searchQuery, int? categoryId, string sortBy)
+    {
+        var products = _context.Products.Include(p => p.Category).AsQueryable();
+
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            string lowerSearchQuery = searchQuery.ToLower();
+            products = products.Where(p => p.ProductName.ToLower().Contains(lowerSearchQuery));
+        }
+
+        if (categoryId.HasValue && categoryId > 0)
+        {
+            products = products.Where(p => p.CategoryId == categoryId);
+        }
+
+        switch (sortBy)
+        {
+            case "price_asc":
+                products = products.OrderBy(p => p.Price);
+                break;
+            case "price_desc":
+                products = products.OrderByDescending(p => p.Price);
+                break;
+            case "name_asc":
+                products = products.OrderBy(p => p.ProductName);
+                break;
+            case "name_desc":
+                products = products.OrderByDescending(p => p.ProductName);
+                break;
+            default:
+                products = products.OrderBy(p => p.ProductName);
+                break;
+        }
+
+        return PartialView("_ProductList", products.ToList());
+    }
     
     [HttpGet]
     public IActionResult Manage()

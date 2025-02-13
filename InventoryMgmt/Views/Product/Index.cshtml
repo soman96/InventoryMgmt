@@ -8,24 +8,24 @@
 <h2>Products</h2>
 
 <!-- Search and Filter Form -->
-<form method="get" class="container mb-3">
+<form class="container mb-3">
     <div class="row">
         <div class="col-md-4">
-            <input type="text" name="searchQuery" class="form-control" placeholder="Search by name" value="@ViewBag.SearchQuery">
+            <input type="text" id="searchQuery" class="form-control" placeholder="Search by name" value="@ViewBag.SearchQuery">
         </div>
         <div class="col-md-3">
-            <select name="categoryId" class="form-control">
+            <select id="categoryFilter" class="form-control">
                 <option value="">All Categories</option>
                 @foreach (var category in ViewBag.Categories as SelectList)
                 {
-                    <option value="@category.Value" selected="@(ViewBag.SelectedCategory == int.Parse(category.Value) ? "selected" : null)">
+                    <option value="@category.Value" selected="@(ViewBag.SelectedCategory != null && ViewBag.SelectedCategory.ToString() == category.Value ? "selected" : null)">
                         @category.Text
                     </option>
                 }
             </select>
         </div>
         <div class="col-md-3">
-            <select name="sortBy" class="form-control">
+            <select id="sortBy" class="form-control">
                 <option value="">Sort By</option>
                 <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc" ? "selected" : null)">Price (Low to High)</option>
                 <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc" ? "selected" : null)">Price (High to Low)</option>
@@ -33,44 +33,36 @@
                 <option value="name_desc" selected="@(ViewBag.SortBy == "name_desc" ? "selected" : null)">Name (Z-A)</option>
             </select>
         </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">Apply</button>
-        </div>
     </div>
 </form>
 
-@if (Model.Any())
-{
-    <div class="container">
-        <div class="row">
-            @foreach (var product in Model)
-            {
-                <div class="col-md-3 mb-2">
-                    <div class="card shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">@product.ProductName</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Category: @product.Category.Name</h6>
-                            <p class="card-text">
-                                Price: <strong>@product.Price.ToString("C")</strong><br>
-                                Quantity: <strong>@product.Quantity</strong><br>
-                            </p>
-                            <a asp-action="View" asp-route-id="@product.ProductId" class="btn btn-primary">View</a>
-                            @if (product.Quantity == 0)
-                            { 
-                                <a href="#" class="btn btn-success disabled">Add to Order</a>
-                            }
-                            else
-                            { 
-                                <a href="#" class="btn btn-success">Add to Order</a>
-                            }
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-}
-else
-{
-    <p>There are currently no products to display. <a asp-action="Add">Add a Product</a></p>
-}
+<!-- Product List -->
+<div id="productList">
+    @await Html.PartialAsync("_ProductList", Model)
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function fetchProducts() {
+            var searchQuery = $("#searchQuery").val();
+            var categoryId = $("#categoryFilter").val();
+            var sortBy = $("#sortBy").val();
+
+            $.ajax({
+                url: '@Url.Action("FilterProducts", "Product")',
+                type: 'GET',
+                data: { searchQuery: searchQuery, categoryId: categoryId, sortBy: sortBy },
+                beforeSend: function() {
+                    $("#productList").html("<p>Loading...</p>");
+                },
+                success: function (result) {
+                    $("#productList").html(result);
+                }
+            });
+        }
+
+        // Trigger on input change
+        $("#searchQuery, #categoryFilter, #sortBy").on("input change", fetchProducts);
+    });
+</script>
