@@ -1,8 +1,75 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<Product>
+
+@{
+    var products = Model ?? new List<Product>();
+    var lowStockItems = products
+        .Where(p => p.Quantity <= p.LowStockThreshold)
+        .OrderBy(p => p.ProductName) // Sort by name
+        .ThenBy(p => p.Quantity)     // Then by quantity
+        .ToList();
+    var recentItems = products.OrderByDescending(p => p.ProductId).Take(2).ToList();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Inventory Management</h2>
+        </div>
+    </div>
+
+    <!-- Inventory Summary -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Products</h5>
+                    <p class="card-text">@products.Count</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Low Stock Items</h5>
+                    <p class="card-text">@lowStockItems.Count</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock Items (Sorted by Name, then Quantity) -->
+    <h3 class="mt-4">Low Stock Items</h3>
+    <div class="d-flex flex-row overflow-auto">
+        @foreach (var item in lowStockItems)
+        {
+            <div class="card m-2" style="min-width: 200px;">
+                <div class="card-body">
+                    <h5 class="card-title">@item.ProductName</h5>
+                    <p class="card-text">Stock: @item.Quantity</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Recent Items -->
+    <h3 class="mt-4">Recently Added Items</h3>
+    <div class="row">
+        @foreach (var item in recentItems)
+        {
+            <div class="col-md-6">
+                <div class="card m-2">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.ProductName</h5>
+                        <p class="card-text">Price: $@item.Price</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Banner Ad (Moved to Bottom) -->
+    <div class="mt-5">
+        <img id="bannerAd" src="" alt="Ad" class="w-100"
+             onerror="this.onerror=null; this.src='https://via.placeholder.com/728x90?text=Ad';">
+    </div>
 </div>

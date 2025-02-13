@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using InventoryMgmt.Data;
 using Microsoft.AspNetCore.Mvc;
 using InventoryMgmt.Models;
 
@@ -7,15 +8,18 @@ namespace InventoryMgmt.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
     {
         _logger = logger;
+        _context = context;
     }
 
     public IActionResult Index()
     {
-        return View();
+        var products = _context.Products.ToList(); // Fetch products from DB
+        return View(products);
     }
 
     public IActionResult About()
