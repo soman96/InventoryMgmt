@@ -3,7 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add sessions
+builder.Services.AddDistributedMemoryCache(); // Required for session
+builder.Services.AddSession();
+
+// Add services to the container
 builder.Services.AddControllersWithViews();
 
 // Add the context to the service collection with a connection string
@@ -22,6 +26,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseSession();
+
 
 app.UseAuthorization();
 

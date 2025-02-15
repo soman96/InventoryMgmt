@@ -1,0 +1,59 @@
+@model List<Cart>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Cart</h2>
+
+@if (!Model.Any())
+{
+    <p>There are no products in your cart. <a asp-controller="Product" asp-action="Index">See all products!</a></p>
+}
+else
+{
+<table class="table">
+    <thead>
+    <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>@item.ProductName</td>
+        <td>@item.Price.ToString("C")</td>
+        <td>@item.Quantity</td>
+        <td>
+            <a asp-controller="Product" asp-action="View" asp-route-id="@item.ProductId" class="btn btn-primary">View</a>
+            <a asp-action="RemoveFromCart" asp-route-productId="@item.ProductId" class="btn btn-danger">Remove</a>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
+
+<h3>Total: @Model.Sum(i => i.Price * i.Quantity).ToString("C")</h3>
+
+<form asp-action="PlaceOrder" method="post">
+    <div class="form-group">
+        <label for="Name" class="form-label">Your Name</label>
+        <input type="text" id="Name" for="Name" name="Name" class="form-control" required>
+    </div>
+
+    <br>
+    
+    <div class="form-group">
+        <input type="submit" value="Place Order" class="btn btn-success">
+    </div>
+</form>
+
+<br>
+<a asp-controller="Product" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
+
+}

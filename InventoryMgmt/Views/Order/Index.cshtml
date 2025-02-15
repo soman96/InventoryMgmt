@@ -1,0 +1,43 @@
+@model List<Order>
+
+@{
+    ViewBag.Title = "Orders";
+    Layout = "_Layout";
+}
+
+@if (TempData["success"] != null)
+{
+<div class="alert alert-success" role="alert">
+    @TempData["success"]
+</div>
+}
+
+<h2>Orders</h2>
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Order Date</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.CustomerName</td>
+                <td>@order.OrderDate</td>
+                <td>@order.Total.ToString("C")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>There are currently no orders to display.</p>
+}

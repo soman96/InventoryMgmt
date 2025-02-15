@@ -23,7 +23,14 @@
                         Quantity: <strong>@Model.Quantity</strong><br>
                         @* Low Stock Threshold: <strong>5</strong> *@
                     </p>
-                    <button class="btn btn-success">Add to Cart</button>
+                    @if (@Model.Quantity == 0)
+                    {
+                    <a href="#" class="btn btn-success disabled">Add to Order</a>
+                    }
+                    else
+                    {
+                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@Model.ProductId" class="btn btn-success">Add to Order</a>
+                    }
                     <a asp-action="Index" class="btn btn-primary">Return to Products</a>
                 </div>
             </div>

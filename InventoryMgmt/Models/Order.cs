@@ -14,6 +14,5 @@ public class Order
     
     public double Total { get; set; }
     
-    // public List<Product> Products { get; set; } = new List<Product>();
-    
+    public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }
