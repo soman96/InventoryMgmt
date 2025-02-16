@@ -15,7 +15,7 @@ public class OrderController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        var orders = _context.Orders.ToList();
+        var orders = _context.Orders.OrderByDescending(o => o.OrderId).ToList();
         return View(orders);
     }
 }
