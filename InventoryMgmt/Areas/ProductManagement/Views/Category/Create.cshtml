@@ -1,13 +1,13 @@
 @model InventoryMgmt.Areas.ProductManagement.Models.Category
 
 @{
-    ViewBag.Title = "Add Category";
+    ViewBag.Title = "Create Category";
     Layout = "_Layout";
 }
 
 <h2>Add Category</h2>
 
-<form asp-action="Add" method="post">
+<form method="post" asp-action="Create">
     <div class="form-group">
         <label asp-for="Name" class="form-label">Name</label>
         <input type="text" asp-for="Name" class="form-control" required>
@@ -21,7 +21,7 @@
     </div>
     <br>
     <div class="form-group">
-        <input type="submit" value="Add Category" class="btn btn-primary">
+        <input type="submit" value="Create Category" class="btn btn-primary">
     </div>
 </form>
 

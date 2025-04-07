@@ -19,7 +19,7 @@ public class ProductController : Controller
         _context = context;
     }
     
-    [HttpGet]
+    [HttpGet("")]
     public IActionResult Index(string searchQuery, int? categoryId, string sortBy)
     {
         var products = _context.Products.Include(p => p.Category).AsQueryable();
@@ -103,7 +103,7 @@ public class ProductController : Controller
         return PartialView("_ProductList", products.ToList());
     }
     
-    [HttpGet]
+    [HttpGet("Manage")]
     public IActionResult Manage()
     {
         // var products = _context.Products.ToList();
@@ -120,7 +120,7 @@ public class ProductController : Controller
         return View();
     }
     
-    [HttpPost]
+    [HttpPost("Add")]
     [ValidateAntiForgeryToken]
     public IActionResult Add(Product product)
     {
@@ -152,7 +152,7 @@ public class ProductController : Controller
         return View(product);
     }
 
-    [HttpGet]
+    [HttpGet("Delete/{id:int}")]
     public IActionResult Delete(int id)
     {
         // Get the specific product
@@ -165,7 +165,7 @@ public class ProductController : Controller
         return View(product);
     }
 
-    [HttpPost, ActionName("Delete")]
+    [HttpPost("Delete/{productId:int}"), ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int productId)
     {
@@ -182,7 +182,7 @@ public class ProductController : Controller
         return NotFound();
     }
 
-    [HttpGet]
+    [HttpGet("LowStock")]
     public IActionResult LowStock()
     {
         var products = _context.Products.Where(p => p.Quantity <= p.LowStockThreshold).OrderBy(p => p.Quantity).ToList();
@@ -190,7 +190,7 @@ public class ProductController : Controller
         return View(products);
     }
 
-    [HttpGet]
+    [HttpGet("Edit/{id:int}")]
     public IActionResult Edit(int id)
     {
         var product = _context.Products.FirstOrDefault(p => p.ProductId == id);
@@ -206,7 +206,7 @@ public class ProductController : Controller
         return View(product);
     }
 
-    [HttpPost]
+    [HttpPost("Edit/{id:int}")]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(int id,
         [Bind("ProductId, ProductName, CategoryId, Price, Quantity, LowStockThreshold")] Product product)
@@ -230,7 +230,7 @@ public class ProductController : Controller
         return View(product);
     }
 
-    [HttpGet]
+    [HttpGet("View/{id:int}")]
     public IActionResult View(int id)
     {
         var product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == id);

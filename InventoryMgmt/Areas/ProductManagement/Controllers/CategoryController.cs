@@ -18,7 +18,7 @@ public class CategoryController : Controller
         _context = context;
     }
     
-    [HttpGet("Add")]
+    [HttpGet("")]
     public IActionResult Index()
     {
         // Get all the categories
@@ -26,15 +26,16 @@ public class CategoryController : Controller
         return View(categories);
     }
 
-    [HttpGet]
-    public IActionResult Add()
+    [HttpGet("Create")]
+    public IActionResult Create()
     {
+        Console.WriteLine("Called Correct GET Controller");
         return View();
     }
 
-    [HttpPost("Add")]
+    [HttpPost("Create")]
     [ValidateAntiForgeryToken]
-    public IActionResult Add(Category category)
+    public IActionResult Create(Category category)
     {
         if (ModelState.IsValid)
         { 
@@ -42,13 +43,13 @@ public class CategoryController : Controller
             _context.SaveChanges(); // Commit changes
             
             TempData["success"] = $"The category {category.Name} has been added successfully.";
-            
             return RedirectToAction("Index"); // Redirect to Index (List of categories)
         }
+        
         return View(category);
     }
     
-    [HttpGet]
+    [HttpGet("Edit/{id:int}")]
     public IActionResult Edit(int id)
     {
         var category = _context.Categories.Find(id);
@@ -57,7 +58,7 @@ public class CategoryController : Controller
         return View(category);
     }
 
-    [HttpPost]
+    [HttpPost("Edit/{id:int}")]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(int id, [Bind("CategoryId, Name, Description")] Category category)
     {
@@ -97,7 +98,7 @@ public class CategoryController : Controller
         return _context.Categories.Any(e => e.CategoryId == id);
     }
     
-    [HttpGet]
+    [HttpGet("Delete/{id:int}")]
     public IActionResult Delete(int id)
     {
         // Get the specific product
@@ -110,7 +111,7 @@ public class CategoryController : Controller
         return View(category);
     }
     
-    [HttpPost, ActionName("Delete")]
+    [HttpPost("Delete/{categoryId:int}"), ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int categoryId)
     {
