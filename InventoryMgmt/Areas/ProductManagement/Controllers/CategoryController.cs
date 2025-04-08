@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryMgmt.Areas.ProductManagement.Controllers;
 
+
 [Area("ProductManagement")]
 [Route("[area]/[controller]")]
 public class CategoryController : Controller
@@ -21,6 +22,18 @@ public class CategoryController : Controller
     
     [HttpGet("")]
     public IActionResult Index()
+    {
+        // Load categories along with products
+        var categories = _context.Categories
+            .Include(c => c.Products)
+            .ToList();
+
+        return View(categories);
+    }
+    
+    [Authorize(Roles = "Admin, Manager")]
+    [HttpGet("Manage")]
+    public IActionResult Manage()
     {
         // Get all the categories
         var categories = _context.Categories.ToList();

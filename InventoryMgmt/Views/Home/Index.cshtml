@@ -1,71 +1,72 @@
 ﻿@using InventoryMgmt.Areas.ProductManagement.Models
-@model List<InventoryMgmt.Areas.ProductManagement.Models.Product>
+@model List<Product>
+
+@inject SignInManager<IdentityUser> SignInManager
 
 @{
     var products = Model ?? new List<Product>();
-    var lowStockItems = products
-        .Where(p => p.Quantity <= p.LowStockThreshold)
-        .OrderBy(p => p.ProductName) // Sort by name
-        .ThenBy(p => p.Quantity)     // Then by quantity
-        .ToList();
-    var recentItems = products.OrderByDescending(p => p.ProductId).Take(2).ToList();
+    var recentItems = products.OrderByDescending(p => p.ProductId).Take(4).ToList();
+    var recentCategories = products.Select(p => p.Category).Where(c => c != null).Distinct().Take(4).ToList();
 }
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Inventory Management Store</h2>
+<div class="container my-4">
+
+    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Welcome to InventoryMgmt</h1>
+            <p class="col-md-8 fs-5">Ultimate Inventory Management Solution</p>
+
+            @if (!SignInManager.IsSignedIn(User))
+            {
+                <div class="mb-3">
+                    <a class="btn btn-primary btn-lg me-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                    <a class="btn btn-outline-primary btn-lg" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                </div>
+
+                <p class="text-muted">
+                    Need a demo account? <a asp-area="" asp-controller="Home" asp-action="About">Head over to the About Us page</a>.
+                </p>
+            }
+
         </div>
     </div>
 
-    <!-- Inventory Summary -->
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Total Products</h5>
-                    <p class="card-text">@products.Count</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card text-white bg-danger mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Low Stock Items</h5>
-                    <p class="card-text">@lowStockItems.Count</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Low Stock Items (Sorted by Name, then Quantity) -->
-    <h3 class="mt-4">Low Stock Items</h3>
-    <div class="d-flex flex-row overflow-auto">
-        @foreach (var item in lowStockItems)
-        {
-            <div class="card m-2" style="min-width: 200px;">
-                <div class="card-body">
-                    <h5 class="card-title">@item.ProductName</h5>
-                    <p class="card-text">Stock: @item.Quantity</p>
-                </div>
-            </div>
-        }
-    </div>
-
-    <!-- Recent Items -->
-    <h3 class="mt-4">Recently Added Items</h3>
-    <div class="row">
-        @foreach (var item in recentItems)
-        {
-            <div class="col-md-6">
-                <div class="card m-2">
-                    <div class="card-body">
-                        <h5 class="card-title">@item.ProductName</h5>
-                        <p class="card-text">Price: $@item.Price</p>
+    @if (recentItems.Any())
+    {
+        <h3 class="mb-3">Recently Added Products</h3>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            @foreach (var item in recentItems)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.ProductName</h5>
+                            <p class="card-text text-muted">$@item.Price</p>
+                            <p class="card-text small">Category: @item.Category?.Name</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-    
+            }
+        </div>
+    }
+
+    @if (recentCategories.Any())
+    {
+        <h3 class="mt-5 mb-3">Recently Added Categories</h3>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            @foreach (var cat in recentCategories)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@cat.Name</h5>
+                            <p class="card-text text-muted">@cat.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
 </div>

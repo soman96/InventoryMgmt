@@ -2,6 +2,7 @@ using System.Diagnostics;
 using InventoryMgmt.Data;
 using Microsoft.AspNetCore.Mvc;
 using InventoryMgmt.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryMgmt.Controllers;
 
@@ -18,7 +19,10 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        var products = _context.Products.ToList(); // Fetch products from DB
+        var products = _context.Products
+            .Include(p => p.Category)
+            .ToList();
+        
         return View(products);
     }
 

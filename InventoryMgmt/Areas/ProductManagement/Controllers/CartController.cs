@@ -2,10 +2,12 @@ using System.Text.Json;
 using InventoryMgmt.Data;
 using InventoryMgmt.Models;
 using InventoryMgmt.Areas.ProductManagement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryMgmt.Areas.ProductManagement.Controllers;
 
+[Authorize]
 [Area("ProductManagement")]
 [Route("[area]/[controller]")]
 public class CartController : Controller

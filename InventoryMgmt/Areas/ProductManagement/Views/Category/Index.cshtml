@@ -16,32 +16,30 @@
 
 @if (Model.Any())
 {
-<table class="table">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var category in Model)
-    {
-        <tr>
-            <td>@category.CategoryId</td>
-            <td>@category.Name</td>
-            <td>@category.Description</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-warning">Edit</a>
-                <a asp-action="Delete" asp-route-id="@category.CategoryId" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+        @foreach (var category in Model)
+        {
+            <div class="col">
+                <a asp-area="ProductManagement"
+                   asp-controller="Product"
+                   asp-action="Index"
+                   asp-route-categoryId="@category.CategoryId"
+                   class="text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm small-tile hover-shadow" style="cursor: pointer;">
+                        <div class="card-body">
+                            <h6 class="card-title fw-bold">@category.Name</h6>
+                            <p class="card-text text-muted mb-1 small">@category.Description</p>
+                            <p class="card-text text-secondary small mb-0">
+                                <strong>@(category.Products?.Count ?? 0)</strong> product(s)
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
 }
 else
 {
-<p>There are currently no categories to display.</p>
+    <p>There are currently no categories to display.</p>
 }
