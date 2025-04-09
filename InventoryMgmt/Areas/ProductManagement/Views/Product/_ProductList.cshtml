@@ -22,7 +22,8 @@
                             }
                             else
                             {
-                                <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@product.ProductId" class="btn btn-success">Add to Order</a>
+                                <a href="#" class="btn btn-success add-to-cart" data-id="@product.ProductId">Add to Order</a>
+                                @* <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@product.ProductId" class="btn btn-success">Add to Order</a> *@
                             }
                         </div>
                     </div>

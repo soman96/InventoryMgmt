@@ -67,10 +67,11 @@ public class CartController : Controller
         SaveCart(cart);
         
         
-        TempData["success"] = product.ProductName + " has been added to your cart";
+        // TempData["success"] = product.ProductName + " has been added to your cart";
         
         // Retunr to all products page
-        return RedirectToAction("Index", "Product");
+        // return RedirectToAction("Index", "Product");
+        return Json(new { message = $"{product.ProductName} added to cart." });
     }
 
     // Remove Item from Cart

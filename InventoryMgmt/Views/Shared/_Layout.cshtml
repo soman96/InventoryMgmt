@@ -32,5 +32,13 @@
     });
 </script>
 @await RenderSectionAsync("Scripts", required: false)
+
+<div id="global-spinner" class="d-none" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background-color:rgba(255,255,255,0.7); z-index:1050; display:flex; justify-content:center; align-items:center;">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+
 </body>
 </html>
