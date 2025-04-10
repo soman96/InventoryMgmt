@@ -9,16 +9,17 @@
 <table class="table">
     <thead>
     <tr>
+        <th>ID</th>
         <th>Email</th>
-        <th>User Name</th>
+        <th>UserName</th>
         <th>Roles</th>
-        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     @foreach (var user in Model)
     {
         <tr>
+            <td>@user.UserId</td>
             <td>@user.Email</td>
             <td>@user.UserName</td>
             <td>
@@ -33,9 +34,6 @@
                 {
                     <span class="text-muted">No roles</span>
                 }
-            </td>
-            <td>
-                <!-- Later: Add buttons to edit, delete, assign roles -->
             </td>
         </tr>
     }

@@ -7,7 +7,7 @@ namespace InventoryMgmt.Areas.Admin.Controllers
 {
     [Authorize(Roles = "Admin")]
     [Area("Admin")]
-    [Route("[area]/[controller]/[action]")]
+    [Route("[area]/[controller]")]
     public class UserController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -17,7 +17,7 @@ namespace InventoryMgmt.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<IActionResult> Index()
         {
             var users = _userManager.Users.ToList();

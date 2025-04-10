@@ -59,23 +59,19 @@ public class CartController : Controller
         }
         else
         {   
-            // Increment the quanity if product already in cart
+            // Increment the quantity of product already in cart
             Cart.Quantity++;
         }
     
         // Save the cart to the session again
         SaveCart(cart);
-        
-        
-        // TempData["success"] = product.ProductName + " has been added to your cart";
-        
-        // Retunr to all products page
-        // return RedirectToAction("Index", "Product");
+
+        // Return JSON since this method is called by thr AJAX
         return Json(new { message = $"{product.ProductName} added to cart." });
     }
 
     // Remove Item from Cart
-    [HttpGet("RemoveFromCart/{id:int}")]
+    [HttpGet("RemoveFromCart/{productId:int}")]
     public IActionResult RemoveFromCart(int productId)
     {
         // Get cart from session
