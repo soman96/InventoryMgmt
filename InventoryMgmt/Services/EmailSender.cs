@@ -20,10 +20,10 @@ public class EmailSender : IEmailSender
         try
         {
             var client = new SendGridClient(_sendGridApiKey);
-            var from = new EmailAddress("soman.ahmad@georgebrown.ca", "PM Tool Default Sender");
+            var from = new EmailAddress("soman.ahmad@georgebrown.ca", "INVENTORY MGMT");
             var to = new EmailAddress(email);
             var msg = MailHelper
-                .CreateSingleEmail(from, to, subject, "Welcome to the PM Tool Inc", message);
+                .CreateSingleEmail(from, to, subject, "Please confirm your account", message);
 
             var response = await client.SendEmailAsync(msg);
 

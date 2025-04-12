@@ -1,151 +1,178 @@
 using InventoryMgmt.Data;
-using InventoryMgmt.Models;
 using InventoryMgmt.Areas.ProductManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace InventoryMgmt.Areas.ProductManagement.Controllers;
-
 
 [Area("ProductManagement")]
 [Route("[area]/[controller]")]
 public class CategoryController : Controller
 {
-    private readonly ApplicationDbContext _context; // Holds the database context
+    private readonly ApplicationDbContext _context;
+    private readonly ILogger<CategoryController> _logger;
 
-    // Dependency injection for the database within the constructor
-    public CategoryController(ApplicationDbContext context)
+    public CategoryController(ApplicationDbContext context, ILogger<CategoryController> logger)
     {
         _context = context;
+        _logger = logger;
     }
-    
-    [HttpGet("")]
-    public IActionResult Index()
-    {
-        // Load categories along with products
-        var categories = _context.Categories
-            .Include(c => c.Products)
-            .ToList();
 
-        return View(categories);
+    [HttpGet("")]
+    public async Task<IActionResult> Index()
+    {
+        try
+        {
+            var categories = await _context.Categories.Include(c => c.Products).ToListAsync();
+            return View(categories);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading category list");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
-    
+
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet("Manage")]
-    public IActionResult Manage()
+    public async Task<IActionResult> Manage()
     {
-        // Get all the categories
-        var categories = _context.Categories.ToList();
-        return View(categories);
+        try
+        {
+            var categories = await _context.Categories.ToListAsync();
+            return View(categories);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading Manage page for categories");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
 
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet("Create")]
     public IActionResult Create()
     {
-        Console.WriteLine("Called Correct GET Controller");
         return View();
     }
 
     [Authorize(Roles = "Admin, Manager")]
     [HttpPost("Create")]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(Category category)
+    public async Task<IActionResult> Create(Category category)
     {
-        if (ModelState.IsValid)
-        { 
-            _context.Categories.Add(category); // Add new category
-            _context.SaveChanges(); // Commit changes
-            
+        if (!ModelState.IsValid)
+            return View(category);
+
+        try
+        {
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
             TempData["success"] = $"The category {category.Name} has been added successfully.";
-            return RedirectToAction("Index"); // Redirect to Index (List of categories)
+            return RedirectToAction("Index");
         }
-        
-        return View(category);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating category");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
-    
+
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet("Edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var category = _context.Categories.Find(id);
-        if (category == null)
-            return NotFound();
-        return View(category);
+        try
+        {
+            var category = await _context.Categories.FindAsync(id);
+            return category == null ? NotFound() : View(category);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading Edit page for category {CategoryId}", id);
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
 
     [Authorize(Roles = "Admin, Manager")]
     [HttpPost("Edit/{id:int}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(int id, [Bind("CategoryId, Name, Description")] Category category)
+    public async Task<IActionResult> Edit(int id, [Bind("CategoryId, Name, Description")] Category category)
     {
         if (id != category.CategoryId)
-        {
-            return NotFound(); // ensures the id in the route matches the id in model
-        }
+            return NotFound();
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+            return View(category);
+
+        try
         {
-            try
-            {
-                _context.Categories.Update(category); // update the category
-                _context.SaveChanges(); // commit changes
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (CategoryExists(category.CategoryId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
             TempData["success"] = $"The category {category.Name} has been edited successfully.";
             return RedirectToAction("Index");
         }
-
-        return View(category);
+        catch (DbUpdateConcurrencyException ex)
+        {
+            if (!CategoryExists(category.CategoryId))
+            {
+                _logger.LogWarning("Attempted to edit non-existent category with ID {CategoryId}", category.CategoryId);
+                return NotFound();
+            }
+            _logger.LogError(ex, "Concurrency error while editing category {CategoryId}", category.CategoryId);
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating category {CategoryId}", category.CategoryId);
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
 
     private bool CategoryExists(int id)
     {
         return _context.Categories.Any(e => e.CategoryId == id);
     }
-    
+
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet("Delete/{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        // Get the specific product
-        var category = _context.Categories.FirstOrDefault(p => p.CategoryId == id);
-
-        if (category == null)
+        try
         {
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
+            return category == null ? NotFound() : View(category);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading Delete page for category {CategoryId}", id);
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
+    }
+
+    [Authorize(Roles = "Admin, Manager")]
+    [HttpPost("Delete/{categoryId:int}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int categoryId)
+    {
+        try
+        {
+            var category = await _context.Categories.FindAsync(categoryId);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Category deleted successfully!";
+                return RedirectToAction("Index");
+            }
             return NotFound();
         }
-        return View(category);
-    }
-    
-    [Authorize(Roles = "Admin, Manager")]
-    [HttpPost("Delete/{categoryId:int}"), ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(int categoryId)
-    {
-        var category = _context.Categories.Find(categoryId);
-
-        if (category != null)
+        catch (Exception ex)
         {
-            _context.Categories.Remove(category);
-            _context.SaveChanges();
-            TempData["Success"] = "Category deleted successfully!";
-            return RedirectToAction("Index");
+            _logger.LogError(ex, "Error deleting category {CategoryId}", categoryId);
+            return RedirectToAction("ServerError", "Error", new { area = "" });
         }
-        
-        return NotFound();
     }
-    
 }

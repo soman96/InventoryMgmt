@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace InventoryMgmt.Areas.ProductManagement.Controllers;
 
@@ -12,243 +13,263 @@ namespace InventoryMgmt.Areas.ProductManagement.Controllers;
 [Route("[area]/[controller]")]
 public class ProductController : Controller
 {
-    private readonly ApplicationDbContext _context; // Holds the database context
-    
-    // Dependency injection
-    public ProductController(ApplicationDbContext context)
+    private readonly ApplicationDbContext _context;
+    private readonly ILogger<ProductController> _logger;
+
+    public ProductController(ApplicationDbContext context, ILogger<ProductController> logger)
     {
         _context = context;
+        _logger = logger;
     }
-    
+
     [HttpGet("")]
-    public IActionResult Index(string searchQuery, int? categoryId, string sortBy)
+    public async Task<IActionResult> Index(string searchQuery, int? categoryId, string sortBy)
     {
-        var products = _context.Products.Include(p => p.Category).AsQueryable();
-
-        // Searching (Case-Insensitive, Partial Match)
-        if (!string.IsNullOrEmpty(searchQuery))
+        try
         {
-            string lowerSearchQuery = searchQuery.ToLower();
-            products = products.Where(p => p.ProductName.ToLower().Contains(lowerSearchQuery));
-        }
+            var products = _context.Products.Include(p => p.Category).AsQueryable();
 
-        // Filtering by category
-        if (categoryId.HasValue && categoryId > 0)
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                string lowerSearchQuery = searchQuery.ToLower();
+                products = products.Where(p => p.ProductName.ToLower().Contains(lowerSearchQuery));
+            }
+
+            if (categoryId.HasValue && categoryId > 0)
+            {
+                products = products.Where(p => p.CategoryId == categoryId);
+            }
+
+            products = sortBy switch
+            {
+                "price_asc" => products.OrderBy(p => p.Price),
+                "price_desc" => products.OrderByDescending(p => p.Price),
+                "name_asc" => products.OrderBy(p => p.ProductName),
+                "name_desc" => products.OrderByDescending(p => p.ProductName),
+                _ => products.OrderBy(p => p.ProductName),
+            };
+
+            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
+            ViewBag.SortBy = sortBy;
+            ViewBag.SearchQuery = searchQuery;
+            ViewBag.SelectedCategory = categoryId;
+
+            return View(await products.ToListAsync());
+        }
+        catch (Exception ex)
         {
-            products = products.Where(p => p.CategoryId == categoryId);
+            _logger.LogError(ex, "Error occurred in Index action");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
         }
-
-        // Sorting
-        switch (sortBy)
-        {
-            case "price_asc":
-                products = products.OrderBy(p => p.Price);
-                break;
-            case "price_desc":
-                products = products.OrderByDescending(p => p.Price);
-                break;
-            case "name_asc":
-                products = products.OrderBy(p => p.ProductName);
-                break;
-            case "name_desc":
-                products = products.OrderByDescending(p => p.ProductName);
-                break;
-            default:
-                products = products.OrderBy(p => p.ProductName);
-                break;
-        }
-
-        ViewBag.Categories = new SelectList(_context.Categories, "CategoryId", "Name");
-        ViewBag.SortBy = sortBy;
-        ViewBag.SearchQuery = searchQuery;
-        ViewBag.SelectedCategory = categoryId;
-
-        return View(products.ToList());
     }
 
     [HttpGet("FilterProducts")]
-    public IActionResult FilterProducts(string searchQuery, int? categoryId, string sortBy)
+    public async Task<IActionResult> FilterProducts(string searchQuery, int? categoryId, string sortBy)
     {
-        var products = _context.Products.Include(p => p.Category).AsQueryable();
-
-        if (!string.IsNullOrEmpty(searchQuery))
+        try
         {
-            string lowerSearchQuery = searchQuery.ToLower();
-            products = products.Where(p => p.ProductName.ToLower().Contains(lowerSearchQuery));
-        }
+            var products = _context.Products.Include(p => p.Category).AsQueryable();
 
-        if (categoryId.HasValue && categoryId > 0)
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                string lowerSearchQuery = searchQuery.ToLower();
+                products = products.Where(p => p.ProductName.ToLower().Contains(lowerSearchQuery));
+            }
+
+            if (categoryId.HasValue && categoryId > 0)
+            {
+                products = products.Where(p => p.CategoryId == categoryId);
+            }
+
+            products = sortBy switch
+            {
+                "price_asc" => products.OrderBy(p => p.Price),
+                "price_desc" => products.OrderByDescending(p => p.Price),
+                "name_asc" => products.OrderBy(p => p.ProductName),
+                "name_desc" => products.OrderByDescending(p => p.ProductName),
+                _ => products.OrderBy(p => p.ProductName),
+            };
+
+            return PartialView("_ProductList", await products.ToListAsync());
+        }
+        catch (Exception ex)
         {
-            products = products.Where(p => p.CategoryId == categoryId);
+            _logger.LogError(ex, "Error occurred in FilterProducts action");
+            return StatusCode(500);
         }
-
-        switch (sortBy)
-        {
-            case "price_asc":
-                products = products.OrderBy(p => p.Price);
-                break;
-            case "price_desc":
-                products = products.OrderByDescending(p => p.Price);
-                break;
-            case "name_asc":
-                products = products.OrderBy(p => p.ProductName);
-                break;
-            case "name_desc":
-                products = products.OrderByDescending(p => p.ProductName);
-                break;
-            default:
-                products = products.OrderBy(p => p.ProductName);
-                break;
-        }
-
-        return PartialView("_ProductList", products.ToList());
     }
-    
+
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet("Manage")]
-    public IActionResult Manage()
+    public async Task<IActionResult> Manage()
     {
-        // var products = _context.Products.ToList();
-        var products = _context.Products.Include(p => p.Category).ToList();
-        return View(products);
+        try
+        {
+            var products = await _context.Products.Include(p => p.Category).ToListAsync();
+            return View(products);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in Manage action");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
-    
+
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet("Add")]
-    public IActionResult Add()
+    public async Task<IActionResult> Add()
     {
-        // Get all the categories and their IDs for the dropdown menu
-        ViewBag.Categories = new SelectList(_context.Categories, "CategoryId", "Name");
-        
+        ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
         return View();
     }
-    
+
     [Authorize(Roles = "Admin, Manager")]
     [HttpPost("Add")]
     [ValidateAntiForgeryToken]
-    public IActionResult Add(Product product)
+    public async Task<IActionResult> Add(Product product)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
+            return View(product);
+        }
+
+        try
         {
             _context.Products.Add(product);
-            _context.SaveChanges();
-            
+            await _context.SaveChangesAsync();
+
             TempData["Success"] = "Product added successfully";
             return RedirectToAction("Manage");
         }
-        
-        // Debugging
-        foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
+        catch (Exception ex)
         {
-            Console.WriteLine($"Validation Error: {modelError.ErrorMessage}");
+            _logger.LogError(ex, "Error occurred while adding product");
+            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
+            return View(product);
         }
-        
-        foreach (var key in ModelState.Keys)
-        {
-            foreach (var error in ModelState[key].Errors)
-            {
-                Console.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
-            }
-        }
-        
-        // Get the list of categories again
-        ViewBag.Categories = new SelectList(_context.Categories, "CategoryId", "Name");
-        return View(product);
     }
 
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet("Delete/{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        // Get the specific product
-        var product = _context.Products.FirstOrDefault(p => p.ProductId == id);
-
-        if (product == null)
+        try
         {
-            return NotFound();
+            var product = await _context.Products.FindAsync(id);
+            return product == null ? NotFound() : View(product);
         }
-        return View(product);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in Delete GET action");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
 
     [Authorize(Roles = "Admin, Manager")]
     [HttpPost("Delete/{productId:int}"), ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(int productId)
+    public async Task<IActionResult> DeleteConfirmed(int productId)
     {
-        var product = _context.Products.Find(productId);
-
-        if (product != null)
+        try
         {
-            _context.Products.Remove(product);
-            _context.SaveChanges();
-            TempData["Success"] = "Product deleted successfully!";
-            return RedirectToAction("Manage");
+            var product = await _context.Products.FindAsync(productId);
+
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Product deleted successfully!";
+                return RedirectToAction("Manage");
+            }
+            return NotFound();
         }
-        
-        return NotFound();
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in DeleteConfirmed action");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
 
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet("LowStock")]
-    public IActionResult LowStock()
+    public async Task<IActionResult> LowStock()
     {
-        var products = _context.Products.Where(p => p.Quantity <= p.LowStockThreshold).OrderBy(p => p.Quantity).ToList();
-        
-        return View(products);
+        try
+        {
+            var products = await _context.Products
+                .Where(p => p.Quantity <= p.LowStockThreshold)
+                .OrderBy(p => p.Quantity)
+                .ToListAsync();
+
+            return View(products);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in LowStock action");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
 
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet("Edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var product = _context.Products.FirstOrDefault(p => p.ProductId == id);
-
-        if (product == null)
+        try
         {
-            return NotFound();
+            var product = await _context.Products.FindAsync(id);
+            if (product == null) return NotFound();
+
+            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
+            return View(product);
         }
-        
-        // Get all the categories and their IDs for the dropdown menu
-        ViewBag.Categories = new SelectList(_context.Categories, "CategoryId", "Name");
-        
-        return View(product);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in Edit GET action");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
 
     [Authorize(Roles = "Admin, Manager")]
     [HttpPost("Edit/{id:int}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(int id,
-        [Bind("ProductId, ProductName, CategoryId, Price, Quantity, LowStockThreshold")] Product product)
+    public async Task<IActionResult> Edit(int id, [Bind("ProductId, ProductName, CategoryId, Price, Quantity, LowStockThreshold")] Product product)
     {
-        if (id != product.ProductId)
+        if (id != product.ProductId) return NotFound();
+
+        if (!ModelState.IsValid)
         {
-            return NotFound();
+            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
+            return View(product);
         }
 
-        if (ModelState.IsValid)
+        try
         {
             _context.Update(product);
-            _context.SaveChanges();
-            
+            await _context.SaveChangesAsync();
             TempData["Success"] = "Product updated successfully";
             return RedirectToAction("Manage");
         }
-        
-        // Get all the categories and their IDs for the dropdown menu
-        ViewBag.Categories = new SelectList(_context.Categories, "CategoryId", "Name");
-        return View(product);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in Edit POST action");
+            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
+            return View(product);
+        }
     }
 
     [HttpGet("View/{id:int}")]
-    public IActionResult View(int id)
+    public async Task<IActionResult> View(int id)
     {
-        var product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == id);
-        if (product == null)
+        try
         {
-            return NotFound();
+            var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == id);
+            return product == null ? NotFound() : View(product);
         }
-        
-        return View(product);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in View action");
+            return RedirectToAction("ServerError", "Error", new { area = "" });
+        }
     }
-    
 }
