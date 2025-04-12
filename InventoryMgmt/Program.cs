@@ -1,8 +1,10 @@
+using System.Globalization;
 using InventoryMgmt.Data;
 using InventoryMgmt.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
 using Serilog;
 using Serilog.Events;
 
@@ -83,6 +85,15 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
+
+var supportedCultures = new[] { new CultureInfo("en-US") };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
+
 
 app.MapControllerRoute(
         name: "areas",
